@@ -185,8 +185,6 @@
 
         this.$emit('table-data-change', this.tableData.filter(row => !rows.includes(row)))
 
-        console.log(this.tableCacheData)
-
         // this.store.delStates(rows)
       },
 

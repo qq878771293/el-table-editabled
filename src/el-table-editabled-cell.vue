@@ -28,10 +28,7 @@
     name: 'ElTableEditabledCell',
     inject: ['editValidator'],
     props: {
-      prop: {
-        type: String,
-        required: true
-      },
+      prop: String,
       validate: Object,
       row: null,
     },
