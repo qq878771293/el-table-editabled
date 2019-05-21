@@ -2,6 +2,8 @@
 
 一个用来实现el-table复杂编辑并包含验证场景的组件
 
+![image](./demo.gif)
+
 ## Install
 ```shell
 npm install el-table-editabled -S
@@ -220,3 +222,30 @@ Vue.use(ElTableEditabled)
   }
 </script>
 ```
+
+## API
+
+### Props:
+
+属性  |  说明  |  类型  |  默认值
+:-------: | -------  |  :-------:  |  :-------:
+v-model  |  绑定el-table的表格数据  |  Array  |  --
+columns  |  需要编辑的列的字段名  |  Array  |  --
+rowStates  |  可以给行添加一些状态  |  Function(row)  |  --
+cellStates  | 可以给每一个单元格添加一些状态 |  Object  |  --
+default-editing  |  表格是否默认为正在编辑状态  |  Boolean  | false
+
+### Methods:
+
+方法  |  说明  |  参数 
+:-------: | -------  |  :-------:
+editRows  |  使某些行进入编辑状态  |  Function(rows: Array<row>)
+editColumns | 是某些行的某些字段进入编辑状态 | Function(rows: Array<row>, columns: Array<column>)
+delRows  |  删除某些行  |  Function(rows: Array<row>)
+newRows  |  新增行  |  Function(newDatas: Array<newRowData>)
+insertRowsBeforeRow | 在某一行之前插入新数据 | Function(row: Object, newDatas: Array<newRowData>)
+insertRowsAfterRow | 在某一行之后插入新数据 | Function(row: Object, newDatas: Array<newRowData>)
+cancelRows | 撤销某些行的编辑状态和数据（可选） | Function(rows: Array<row>, isCancelData: Boolean(是否回滚数据，默认为true))
+validateRows | 对某些正在编辑的行数据进行校验 | Function([rows: Array<row>, callback: Function(valid))
+validate | 对整个表格正在编辑的数据进行校验 | Function(callback: Function(valid))
+
