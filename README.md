@@ -225,7 +225,7 @@ Vue.use(ElTableEditabled)
 
 ## API
 
-### Props:
+### El-Table-Editabled Props:
 
 属性  |  说明  |  类型  |  默认值
 :-------: | -------  |  :-------:  |  :-------:
@@ -235,17 +235,33 @@ rowStates  |  可以给行添加一些状态  |  Function(row)  |  --
 cellStates  | 可以给每一个单元格添加一些状态 |  Object  |  --
 default-editing  |  表格是否默认为正在编辑状态  |  Boolean  | false
 
-### Methods:
+### El-Table-Editabled Methods:
 
 方法  |  说明  |  参数 
 :-------: | -------  |  :-------:
-editRows  |  使某些行进入编辑状态  |  Function(rows: Array<row>)
-editColumns | 是某些行的某些字段进入编辑状态 | Function(rows: Array<row>, columns: Array<column>)
-delRows  |  删除某些行  |  Function(rows: Array<row>)
-newRows  |  新增行  |  Function(newDatas: Array<newRowData>)
-insertRowsBeforeRow | 在某一行之前插入新数据 | Function(row: Object, newDatas: Array<newRowData>)
-insertRowsAfterRow | 在某一行之后插入新数据 | Function(row: Object, newDatas: Array<newRowData>)
-cancelRows | 撤销某些行的编辑状态和数据（可选） | Function(rows: Array<row>, isCancelData: Boolean(是否回滚数据，默认为true))
-validateRows | 对某些正在编辑的行数据进行校验 | Function([rows: Array<row>, callback: Function(valid))
+editRows  |  使某些行进入编辑状态  |  Function(rows: Array&lt;row&gt;)
+editColumns | 是某些行的某些字段进入编辑状态 | Function(rows: Array&lt;row&gt;, columns: Array&lt;column&gt;)
+delRows  |  删除某些行  |  Function(rows: Array&lt;row&gt;)
+newRows  |  新增行  |  Function(newDatas: Array&lt;newRowData&gt;)
+insertRowsBeforeRow | 在某一行之前插入新数据 | Function(row: Object, newDatas: Array&lt;newRowData&gt;)
+insertRowsAfterRow | 在某一行之后插入新数据 | Function(row: Object, newDatas: Array&lt;newRowData&gt;)
+cancelRows | 撤销某些行的编辑状态和数据（可选） | Function(rows: Array&lt;row&gt;, isCancelData: Boolean(是否回滚数据，默认为true))
+validateRows | 对某些正在编辑的行数据进行校验 | Function(rows: Array&lt;row&gt;, callback: Function(valid))
 validate | 对整个表格正在编辑的数据进行校验 | Function(callback: Function(valid))
+
+### El-Table-Editabled-Cell Props:
+
+属性  |  说明  |  类型  |  默认值
+:-------: | -------  |  :-------:  |  :-------:
+row  |  当前单元格所在的行数据  | Object  |  --
+prop  |  字段名(对应columns数组里面的配置)  |  String  |  --
+validate  |  当前单元格的验证规则  |  Object  |  --
+
+### El-Table-Editabled-Cell Scoped Slot:
+
+插槽名  |  说明  |  scope
+:-------: | -------  |  :-------: 
+--  |  当前单元格的内容  | { rowStates: { editing }, cellStates: { editing, validateMsg } }
+
+作者wx: ckang1229
 
