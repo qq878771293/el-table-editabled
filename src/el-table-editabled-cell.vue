@@ -43,7 +43,7 @@
         return this.editValidator.store.getStates(this.row)
       },
       ownStates () {
-        return this.cellStates[this.prop]
+        return this.cellStates && this.prop ? this.cellStates[this.prop] : {}
       }
     },
     created () {
@@ -53,8 +53,8 @@
       this.$$ElTableEditabled.$off('edit-validator:validate', this.handleValidate)
     },
     methods: {
-      handleValidate (validateStacks) {
-        if ((this.ownStates.editing || this.rowStates.editing) && this.validate) {
+      handleValidate (validateStacks, validateRows) {
+        if ((this.ownStates.editing || this.rowStates.editing) && this.validate && (!validateRows || validateRows.includes(this.row))) {
           validateStacks.push(this.validateOwn)
         }
       },

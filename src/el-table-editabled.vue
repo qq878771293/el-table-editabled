@@ -171,7 +171,7 @@
       updateTableCache (oldRow, newRow, rowStates) {
         this.store.states.set(newRow, rowStates)
         this.store.states.delete(oldRow)
-        this.tableCacheData.set(newRow, deepCopy(cacheRowData))
+        this.tableCacheData.set(newRow, deepCopy(newRow))
       },
 
       editColumns (rows, cells) {
@@ -221,33 +221,37 @@
         this.editRows(rows)
       },
 
-      async validate (cb) {
+      async validateRows (rows, cb) {
         const validateStacks = []
-        this.$$ElTableEditabled.$emit('edit-validator:validate', validateStacks)
+        this.$$ElTableEditabled.$emit('edit-validator:validate', validateStacks, rows)
         let validatePromiseStacks = []
         let valid
 
         validateStacks.forEach(validateCell => {
-          validatePromiseStacks.push(new Promise((resolve, reject) => {
-            validateCell().then(errorMsg => {
-              if (errorMsg) {
-                reject()
-              } else {
-                resolve()
-              }
-            })
-          }))
+            validatePromiseStacks.push(new Promise((resolve, reject) => {
+                validateCell().then(errorMsg => {
+                    if (errorMsg) {
+                        reject()
+                    } else {
+                        resolve()
+                    }
+                })
+            }))
         })
 
         try {
-          await Promise.all(validatePromiseStacks)
+            await Promise.all(validatePromiseStacks)
 
-          valid = true
+            valid = true
         } catch(e) {
-          valid = false
+            valid = false
         }
 
         cb(valid)
+      },
+
+      validate (cb) {
+        this.validateRows(null, cb)
       }
     }
   }
