@@ -43,7 +43,6 @@
     inject: ['editValidator'],
     props: {
       prop: String,
-      validator: Function,
       row: null,
     },
     computed: {
@@ -57,33 +56,9 @@
         return this.cellStates && this.prop ? this.cellStates[this.prop] : {}
       }
     },
-    created () {
-      this.$$ElTableEditabled.$on('edit-validator:validate', this.handleValidate)
-    },
-    beforeDestroy () {
-      this.$$ElTableEditabled.$off('edit-validator:validate', this.handleValidate)
-    },
     methods: {
-      handleValidate (validateStacks, validateRows) {
-        if ((this.ownStates.editing || this.rowStates.editing) && this.validator && (!validateRows || validateRows.includes(this.row))) {
-          validateStacks.push(this.validateOwn)
-        }
-      },
       validateOwn () {
-        const {
-          validator,
-          ownStates,
-          rowStates
-        } = this
-
-        return new Promise(resolve => {
-          validator(this.row, (errorMsg) => {
-            if (ownStates.editing || rowStates.editing) {
-              ownStates.validateMsg = errorMsg
-              resolve(errorMsg)
-            }
-          }, this.rowStates, this.cellStates)
-        })
+        this.editValidator.validateCell(this.prop, this.row, this.rowStates, this.cellStates, this.ownStates)
       }
     }
   }

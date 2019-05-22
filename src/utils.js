@@ -29,6 +29,10 @@ export const getEmptyArray = function () {
   return []
 }
 
+export const getEmptyObject = function () {
+  return {}
+}
+
 export const isUndefined = (target) => {
   return toString.call(target) === '[object Undefined]'
 }

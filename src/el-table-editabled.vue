@@ -7,6 +7,7 @@
 <script>
   import {
     getEmptyArray,
+    getEmptyObject,
     isEmpty,
     deepCopy
   } from "./utils";
@@ -36,15 +37,19 @@
       },
       rowStates: {
         type: Function,
-        default: () => ({})
+        default: getEmptyObject
       },
       cellStates: {
         type: Object,
         default: () => {
           return {
-            default: () => ({})
+            default: getEmptyObject
           }
         }
+      },
+      validators: {
+        type: Object,
+        default: getEmptyObject
       },
       defaultEditing: {
         type: Boolean,
@@ -222,21 +227,28 @@
       },
 
       async validateRows (rows, cb) {
-        const validateStacks = []
-        this.$$ElTableEditabled.$emit('edit-validator:validate', validateStacks, rows)
         let validatePromiseStacks = []
         let valid
 
-        validateStacks.forEach(validateCell => {
-          validatePromiseStacks.push(new Promise((resolve, reject) => {
-            validateCell().then(errorMsg => {
-              if (errorMsg) {
-                reject()
-              } else {
-                resolve()
-              }
-            })
-          }))
+        rows.forEach(row => {
+          const cellStates = this.store.getStates(row)
+          const rowStates = cellStates._states
+
+          this.columns.forEach(prop => {
+            const ownStates = cellStates ? cellStates[prop] : {}
+
+            if ((ownStates.editing || rowStates.editing) && this.validators[prop]) {
+              validatePromiseStacks.push(new Promise((resolve, reject) => {
+                this.validateCell(prop, row, rowStates, cellStates, ownStates).then(errorMsg => {
+                  if (errorMsg) {
+                    reject()
+                  } else {
+                    resolve()
+                  }
+                })
+              }))
+            }
+          })
         })
 
         try {
@@ -251,7 +263,20 @@
       },
 
       validate (cb) {
-        this.validateRows(null, cb)
+        this.validateRows(this.tableData, cb)
+      },
+
+      validateCell (prop, row, rowStates, cellStates, ownStates) {
+        const validator = this.validators[prop]
+
+        return new Promise(resolve => {
+          validator(row, (errorMsg) => {
+            if (ownStates.editing || rowStates.editing) {
+              ownStates.validateMsg = errorMsg
+              resolve(errorMsg)
+            }
+          }, rowStates, cellStates)
+        })
       }
     }
   }
