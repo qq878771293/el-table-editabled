@@ -4,7 +4,7 @@
 
 ![image](./demo.gif)
 
-[点击查看在线demo](https://ckang1229.github.io/el-table-editabled/)
+<a href="https://ckang1229.github.io/el-table-editabled/" target="_blank">点击查看在线demo</a>
 
 ## Install
 ```shell
