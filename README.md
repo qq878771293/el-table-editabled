@@ -154,11 +154,11 @@ export default {
     }
   },
   methods: {
-    dateValidator ({ date }, callback) {
+    dateValidator ({ date }, next) {
       if (!date) {
-        callback('请选择日期')
+        next('请选择日期')
       } else {
-        callback('')
+        next('')
       }
     },
     nameValidator ({ name }, next) {
