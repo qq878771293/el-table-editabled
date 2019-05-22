@@ -32,6 +32,7 @@ Vue.use(ElTableEditabled)
     <el-table-editabled
       v-model="tableData"
       :columns="['date', 'name']"
+      :validators="validators"
       ref="elTableEditabled"
     >
       <el-table
@@ -51,7 +52,6 @@ Vue.use(ElTableEditabled)
             <el-table-editabled-cell
               :row="row"
               prop="date"
-              :validator="dateValidator"
             >
               <template slot-scope="{ rowStates, validateOwn }">
                 <span v-show="!rowStates.editing">{{row.date}}</span>
@@ -77,7 +77,6 @@ Vue.use(ElTableEditabled)
             <el-table-editabled-cell
               :row="row"
               prop="name"
-              :validator="nameValidator"
             >
               <template slot-scope="{ rowStates, validateOwn }">
                 <span v-show="!rowStates.editing">{{row.name}}</span>
@@ -152,24 +151,26 @@ export default {
         date: '2016-05-04',
         name: '王小虎',
         zip: 200333
-      }]
+      }],
+      validators: {
+        date ({ date }, next) {
+          if (!date) {
+            next('请选择日期')
+          } else {
+            next('')
+          }
+        },
+        name ({ name }, next) {
+          if (!name) {
+            next('请选择日期')
+          } else {
+            next('')
+          }
+        }
+      }
     }
   },
   methods: {
-    dateValidator ({ date }, next) {
-      if (!date) {
-        next('请选择日期')
-      } else {
-        next('')
-      }
-    },
-    nameValidator ({ name }, next) {
-      if (!name) {
-        next('请选择日期')
-      } else {
-        next('')
-      }
-    },
     handleCheckData () {
       console.log(this.tableData)
     },
