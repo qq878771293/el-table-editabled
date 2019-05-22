@@ -247,28 +247,13 @@ validate | 对整个表格正在编辑的数据进行校验 | Function(callback:
 :-------: | -------  |  :-------:  |  :-------:
 row  |  当前单元格所在的行数据  | Object  |  --
 prop  |  字段名(对应columns数组里面的配置)  |  String  |  --
-validate  |  当前单元格的验证规则  |  Object  |  --
-
-### 验证规则配置的格式:
-```javascript
-{
- required: true,
- msg: '该字段为必填字段',
- rules: [{
-  // 自定义验证
-  type: 'custom',
-  value (row, cellStates) {
-    return false
-  }
- }]
-}
-```
+validator  |  自定义当前单元格的验证规则(通过next钩子函数来传递验证提示信息，一定要调用next钩子函数)  |  Function(row, next, rowStates, cellStates)  |  --
 
 ### El-Table-Editabled-Cell Scoped Slot:
 
 插槽名  |  说明  |  scope
 :-------: | -------  |  :-------: 
---  |  当前单元格的内容  | { rowStates: { editing }, cellStates: { editing, validateMsg }, validateOwn }
+--  |  当前单元格的内容  | { rowStates: { editing }, cellStates: { editing, validateMsg, hovering }, validateOwn }
 
 作者wx: ckang1229
 
