@@ -4,6 +4,8 @@
 
 ![image](./demo.gif)
 
+[点击查看在线demo](https://ckang1229.github.io/el-table-editabled/)
+
 ## Install
 ```shell
 npm install el-table-editabled -S
