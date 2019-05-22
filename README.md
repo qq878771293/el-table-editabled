@@ -228,6 +228,7 @@ v-model  |  绑定el-table的表格数据  |  Array  |  --
 columns  |  需要编辑的列的字段名  |  Array  |  --
 rowStates  |  可以给行添加一些状态  |  Function(row)  |  --
 cellStates  | 可以给每一个单元格添加一些状态 |  Object  |  --
+validators  | 给需要编辑的列添加验证规则  |  --
 default-editing  |  表格是否默认为正在编辑状态  |  Boolean  | false
 validate-msg-tooltip  |  表格验证的提示信息是否使用tooltip展示  |  Boolean  | false
 
@@ -251,7 +252,6 @@ validate | 对整个表格正在编辑的数据进行校验 | Function(callback:
 :-------: | -------  |  :-------:  |  :-------:
 row  |  当前单元格所在的行数据  | Object  |  --
 prop  |  字段名(对应columns数组里面的配置)  |  String  |  --
-validator  |  自定义当前单元格的验证规则(通过next钩子函数来传递验证提示信息，一定要调用next钩子函数)  |  Function(row, next, rowStates, cellStates)  |  --
 
 ### El-Table-Editabled-Cell Scoped Slot:
 
