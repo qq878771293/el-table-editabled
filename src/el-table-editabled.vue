@@ -49,6 +49,10 @@
       defaultEditing: {
         type: Boolean,
         default: false
+      },
+      validateMsgTooltip: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
