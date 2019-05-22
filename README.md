@@ -226,6 +226,7 @@ columns  |  需要编辑的列的字段名  |  Array  |  --
 rowStates  |  可以给行添加一些状态  |  Function(row)  |  --
 cellStates  | 可以给每一个单元格添加一些状态 |  Object  |  --
 default-editing  |  表格是否默认为正在编辑状态  |  Boolean  | false
+validate-msg-tooltip  |  表格验证的提示信息是否使用tooltip展示  |  Boolean  | false
 
 ### El-Table-Editabled Methods:
 
