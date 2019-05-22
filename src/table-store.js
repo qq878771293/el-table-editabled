@@ -13,10 +13,10 @@ export default class TableStore {
 
     this.states = new Map()
 
-    this.addStates(this.tableData)
+    this.addStates(this.tableData, options.onInitLoop)
   }
 
-  addStates (data) {
+  addStates (data, loopCb) {
     const {
       columns,
       rowStatesCreator,
@@ -40,6 +40,7 @@ export default class TableStore {
         })
       }
 
+      loopCb && loopCb(row)
       this.states.set(row, rowStates)
     })
   }
@@ -71,22 +72,4 @@ export default class TableStore {
     })
   }
 
-  insertDataBeforeRow (row, rows) {
-    this.insertData(row, rows, 'before')
-  }
-
-  insertDataAfterRow (row, rows) {
-    this.insertData(row, rows, 'after')
-  }
-
-  insertData (row, rows, type) {
-    this.addStates(rows, true)
-
-    // this.vm[this.tableDataKey].find((_row, idx) => {
-    //   if (row === _row) {
-    //     this.vm[this.tableDataKey].splice(type === 'before' ? idx : idx + 1, 0, ...rows)
-    //     return true
-    //   }
-    // })
-  }
 }

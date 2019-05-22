@@ -29,7 +29,7 @@
     inject: ['editValidator'],
     props: {
       prop: String,
-      validate: Object,
+      validator: Function,
       row: null,
     },
     computed: {
@@ -51,55 +51,25 @@
     },
     methods: {
       handleValidate (validateStacks, validateRows) {
-        if ((this.ownStates.editing || this.rowStates.editing) && this.validate && (!validateRows || validateRows.includes(this.row))) {
+        if ((this.ownStates.editing || this.rowStates.editing) && this.validator && (!validateRows || validateRows.includes(this.row))) {
           validateStacks.push(this.validateOwn)
         }
       },
       validateOwn () {
         const {
-          validate: validateOpt,
-          ownStates
+          validator,
+          ownStates,
+          rowStates
         } = this
 
         return new Promise(resolve => {
-          const {
-            required = false,
-            rules = []
-          } = validateOpt
-
-          const result = this.row[this.prop]
-
-          if (required && isEmpty(result)) {
-            return resolve(ownStates.validateMsg = validateOpt.msg)
-          }
-
-          for (const {type, value, msg} of rules) {
-
-            if (type === 'number' && (result === '' || !isNumber(+result))) {
-              return resolve(ownStates.validateMsg = msg)
-            } else if (type === 'minLength' && result.length < value) {
-              return resolve(ownStates.validateMsg = msg)
-            } else if (type === 'maxLength' && result.length > value) {
-              return resolve(ownStates.validateMsg = msg)
-            } else if (type === 'regexp' && !value.test(result)) {
-              return resolve(ownStates.validateMsg = msg)
-            } else if (type === 'custom' && typeof value === 'function' && !value(this.row, this.cellStates)) {
-              return resolve(ownStates.validateMsg = msg)
-            } else if (type === 'async' && typeof value === 'function') {
-              value(this.row, this.cellStates, function () {
-                resolve(ownStates.validateMsg = '')
-              }, function () {
-                resolve(ownStates.validateMsg = msg)
-              })
-              return
+          validator(this.row, (errorMsg) => {
+            if (ownStates.editing || rowStates.editing) {
+              ownStates.validateMsg = errorMsg
+              resolve(errorMsg)
             }
-          }
-
-          resolve(ownStates.validateMsg = '')
+          }, this.rowStates, this.cellStates)
         })
-      },
-      toogleTooltip () {
-        setTimeout(() => this.ownStates.tooltipDisabled = !this.ownStates.validateMsg, 0)
       }
     }
   }

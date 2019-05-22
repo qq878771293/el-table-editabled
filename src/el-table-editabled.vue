@@ -69,7 +69,7 @@
     },
     methods: {
       init () {
-        this.cacheTableData()
+        this.tableCacheData = new Map()
         const cellStates = {}
 
         this.columns.forEach(prop => {
@@ -97,18 +97,12 @@
               }, this.rowStates(row))
             })
           },
-          cellStatesCreator: cellStates
+          cellStatesCreator: cellStates,
+          onInitLoop: (row) => {
+            // 在初始化表格状态遍历表格数据的时候去初始化表格缓存数据
+            this.updateTableCache([row], 'add')
+          }
         })
-      },
-
-      cacheTableData () {
-        const tableCacheData = new Map()
-
-        this.tableData.forEach(row => {
-          tableCacheData.set(row, deepCopy(row))
-        })
-
-        this.tableCacheData = tableCacheData
       },
 
       editRows (rows) {
@@ -117,61 +111,62 @@
         })
       },
 
-      fallback () {
-        const tableData = []
-        const tableCacheData = new Map()
+      updateTableCache (rows, action) {
+        const {
+          tableCacheData
+        } = this
 
-        for (const [row, cacheRowData] of this.tableCacheData) {
-          const rowStates = this.store.getStates(row)
-
-          this.updateTableCache(row, cacheRowData, rowStates)
-          tableData.push(cacheRowData)
-        }
-
-        this.byOwnerAction = true
-        this.tableCacheData = tableCacheData
-        this.$emit('table-data-change', tableData)
-      },
-
-      cancelRows (rows, cancelData = true) {
-        const tableData = []
-
-        this.tableData.forEach(row => {
-          const rowStates = this.store.getStates(row)
-
-          if (rows.includes(row) && rowStates._states.editing) {
-            const cacheRowData = this.tableCacheData.get(row)
-
-            if (cancelData) {
-              this.updateTableCache(row, cacheRowData, rowStates)
-              this.tableCacheData.delete(row, cacheRowData)
-            } else {
-              this.tableCacheData.set(row, deepCopy(row))
-            }
-
-            const currentRow = cancelData ? cacheRowData : row
-
-            tableData.push(currentRow)
-
-            this.store.setRowsStates([currentRow], {
-              editing: false
-            })
-            this.store.setCellStates([currentRow], this.columns, {
-              validateMsg: ''
-            })
-          } else {
-            tableData.push(row)
+        rows.forEach(row => {
+          if ((action === 'add' && !tableCacheData.has(row)) || action === 'update') {
+            tableCacheData.set(row, deepCopy(row))
+          } else if (action === 'delete') {
+            tableCacheData.delete(row)
           }
         })
-
-        this.byOwnerAction = true
-        this.$emit('table-data-change', tableData)
       },
 
-      updateTableCache (oldRow, newRow, rowStates) {
-        this.store.states.set(newRow, rowStates)
-        this.store.states.delete(oldRow)
-        this.tableCacheData.set(newRow, deepCopy(newRow))
+      // 回滚功能暂不开启
+      // fallback () {
+      //   const tableData = []
+      //   const tableCacheData = new Map()
+      //
+      //   for (const [row, cacheRowData] of this.tableCacheData) {
+      //     const rowStates = this.store.getStates(row)
+      //
+      //     this.updateTableCache(row, cacheRowData, rowStates)
+      //     tableData.push(cacheRowData)
+      //   }
+      //
+      //   this.byOwnerAction = true
+      //   this.tableCacheData = tableCacheData
+      //   this.$emit('table-data-change', tableData)
+      // },
+
+      cancelRows (rows, cancelData = true) {
+        const {
+          tableCacheData,
+          store
+        } = this
+
+        rows.forEach(row => {
+          const rowCacheData = tableCacheData.get(row)
+          // 数据回滚
+          if (cancelData && rowCacheData) {
+            Object.assign(row, rowCacheData)
+          } else {
+            // 数据不回滚 更新缓存
+            this.updateTableCache([row], 'update')
+          }
+
+          // 取消编辑状态并重置表单验证状态
+          store.setRowsStates([row], {
+            editing: false
+          })
+          store.setCellStates([row], this.columns, {
+            editing: false,
+            validateMsg: ''
+          })
+        })
       },
 
       editColumns (rows, cells) {
@@ -182,15 +177,17 @@
 
       delRows (rows) {
         this.byOwnerAction = true
+        this.updateTableCache(rows, 'delete')
 
         this.$emit('table-data-change', this.tableData.filter(row => !rows.includes(row)))
 
-        // this.store.delStates(rows)
+        this.store.delStates(rows)
       },
 
       newRows (rows) {
         this.byOwnerAction = true
 
+        this.updateTableCache(rows, 'add')
         this.store.addStates(rows)
         this.tableData.splice(0, 0, ...rows)
 
@@ -202,12 +199,13 @@
       },
 
       insertRowsAfterRow (row, rows) {
-        this.insertData(row, rows, 'after')
+        this.insertRows(row, rows, 'after')
       },
 
       insertRows (row, rows, type) {
         this.byOwnerAction = true
         this.store.addStates(rows)
+        this.updateTableCache(rows, 'add')
 
         this.tableData.find((_row, idx) => {
           if (row === _row) {
@@ -226,23 +224,23 @@
         let valid
 
         validateStacks.forEach(validateCell => {
-            validatePromiseStacks.push(new Promise((resolve, reject) => {
-                validateCell().then(errorMsg => {
-                    if (errorMsg) {
-                        reject()
-                    } else {
-                        resolve()
-                    }
-                })
-            }))
+          validatePromiseStacks.push(new Promise((resolve, reject) => {
+            validateCell().then(errorMsg => {
+              if (errorMsg) {
+                reject()
+              } else {
+                resolve()
+              }
+            })
+          }))
         })
 
         try {
-            await Promise.all(validatePromiseStacks)
+          await Promise.all(validatePromiseStacks)
 
-            valid = true
+          valid = true
         } catch(e) {
-            valid = false
+          valid = false
         }
 
         cb(valid)
