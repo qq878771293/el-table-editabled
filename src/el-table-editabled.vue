@@ -9,7 +9,8 @@
     getEmptyArray,
     getEmptyObject,
     isEmpty,
-    deepCopy
+    deepCopy,
+    observable
   } from "./utils";
   import TabelStore from './table-store'
 
@@ -85,26 +86,21 @@
           const cellStatesCreator = this.cellStates[prop]
 
           cellStates[prop] = row => {
-            return new Vue({
-              data: Object.assign({
-                editing: this.defaultEditing,
-                validateMsg: '',
-                hovering: false
-              }, cellStatesCreator && cellStatesCreator(row))
-            })
+            return observable(Object.assign({
+              editing: this.defaultEditing,
+              validateMsg: '',
+              hovering: false
+            }, cellStatesCreator && cellStatesCreator(row)))
           }
         })
 
         this.store = new TabelStore({
           tableData: this.tableData,
           columns: this.columns,
-          // 因Vue.observable API 依赖于Vue 2.6.x 所以只能用创建Vue实例的方式来创建响应式数据了
           rowStatesCreator: (row) => {
-            return new Vue({
-              data: Object.assign({
-                editing: this.defaultEditing
-              }, this.rowStates(row))
-            })
+            return observable(Object.assign({
+              editing: this.defaultEditing
+            }, this.rowStates(row)))
           },
           cellStatesCreator: cellStates,
           onInitLoop: (row) => {

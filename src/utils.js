@@ -1,4 +1,5 @@
 const toString = Object.prototype.toString
+import Vue from 'vue'
 
 export const isNumber = function (val) {
   let isNumberRes = true
@@ -50,3 +51,5 @@ export const isObject = (target) => {
 }
 
 export const deepCopy = (data) => JSON.parse(JSON.stringify(data))
+
+export const observable = Vue.observable ? Vue.observable : (target) => new Vue({data: target})
