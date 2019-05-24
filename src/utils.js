@@ -52,4 +52,4 @@ export const isObject = (target) => {
 
 export const deepCopy = (data) => JSON.parse(JSON.stringify(data))
 
-export const observable = Vue.observable ? Vue.observable : (target) => new Vue({data: target})
+export const observable = Vue.observable || ((target) => new Vue({data: target}))
