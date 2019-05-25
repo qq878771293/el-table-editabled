@@ -158,10 +158,10 @@
           // 数据回滚
           if (cancelData && rowCacheData) {
             Object.assign(row, rowCacheData)
-          } else {
-            // 数据不回滚 更新缓存
-            this.updateTableCache([row], 'update')
           }
+
+          // 更新缓存 防止字段的值是引用类型 导致修改数据的时候缓存也会被修改
+          this.updateTableCache([row], 'update')
 
           // 取消编辑状态并重置表单验证状态
           store.setRowsStates([row], {
@@ -170,6 +170,33 @@
           store.setCellStates([row], this.columns, {
             editing: false,
             validateMsg: ''
+          })
+        })
+      },
+
+      cancelCells (rows, cells, cancelData = true) {
+        const {
+          tableCacheData,
+          store
+        } = this
+
+        rows.forEach(row => {
+          const rowCacheData = tableCacheData.get(row)
+
+          cells.forEach(cell => {
+            // 数据回滚
+            if (cancelData && rowCacheData && rowCacheData[cell]) {
+              row[cell] = rowCacheData[cell]
+            }
+
+            // 更新缓存
+            this.updateTableCache([row], 'update')
+
+            // 取消单元格编辑状态并重置表单验证状态
+            store.setCellStates([row], [cell], {
+              editing: false,
+              validateMsg: ''
+            })
           })
         })
       },

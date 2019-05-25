@@ -18,6 +18,7 @@
         <slot
           :cellStates="cellStates"
           :rowStates="rowStates"
+          :ownStates="ownStates"
           :validateOwn="validateOwn"
         ></slot>
       </div>
@@ -57,8 +58,19 @@
       }
     },
     methods: {
-      validateOwn () {
+      validateOwn (cb) {
         this.editValidator.validateCell(this.prop, this.row, this.rowStates, this.cellStates, this.ownStates)
+          .then(errorMsg => {
+            let valid
+
+            if (errorMsg) {
+              valid = false
+            } else {
+              valid = true
+            }
+
+            typeof cb === 'function' && cb(valid)
+          })
       }
     }
   }

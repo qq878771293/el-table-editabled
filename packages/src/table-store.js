@@ -59,7 +59,6 @@ export default class TableStore {
 
       cells.forEach(cell => {
         if (cellStates[cell]) {
-          console.log(cellStates)
           Object.assign(cellStates[cell], states)
         }
       })
