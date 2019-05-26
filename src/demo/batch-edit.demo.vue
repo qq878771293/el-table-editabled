@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin-bottom: 12px">
+    <div style="margin-bottom: 20px">
       <el-button @click="handleSave" type="primary">保存</el-button>
       <el-button @click="handleEditRows">编辑</el-button>
       <el-button @click="handleCancelRows">撤销</el-button>
@@ -19,6 +19,7 @@
         :data="tableData"
         style="width: 100%"
         @selection-change="selection = arguments[0]"
+        ref="table"
       >
         <el-table-column
           type="selection"
@@ -151,6 +152,7 @@
         // 删除选中的数据
         if (this.checkSelection()) {
           this.editTable.cancelRows(this.selection)
+          this.$refs.table.clearSelection()
         }
       },
       handleNewRows () {
@@ -168,6 +170,7 @@
         // 保存数据前先进行数据验证
         this.handleValidate(() => {
           this.editTable.cancelRows(this.tableData, false)
+          this.$refs.table.clearSelection()
         })
       },
       handleValidate (successCb) {

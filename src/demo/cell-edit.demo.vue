@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button @click="handleCheckData" style="margin-bottom: 12px">打印表格数据</el-button>
+    <el-button @click="handleCheckData" style="margin-bottom: 20px">打印表格数据</el-button>
     <el-table-editabled
       v-model="tableData"
       :columns="['date', 'name']"
