@@ -9,6 +9,46 @@
 npm install el-table-editabled -S
 ```
 
+## webpack.base.conf.js
+因代码中使用了es6的语法 所以需要添加babel配置
+``` javascript
+'use strict'
+const path = require('path')
+const utils = require('./utils')
+const config = require('../config')
+const vueLoaderConfig = require('./vue-loader.conf')
+// 此处为添加的配置
+const fs = require('fs')
+
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
+//此处为添加的配置
+let dirsName = fs.readdirSync(resolve('node_modules')).filter(dirName => /el-table-editabled/.test(dirName))
+const includesDirs = dirsName.map(dir => resolve(`node_modules/${dir}/src`))
+
+module.exports = {
+  ... //省略的代码
+  module: {
+    rules: [
+      // 省略代码...
+      // 此处有添加babel-loader配置 ‘...includesDirs‘
+      {
+        test: /.js$/,
+        loader: 'babel-loader',
+        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client'), ...includesDirs]
+      },
+      {
+        test: /.(png|jpe?g|gif|svg)(?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('img/[name].[hash:7].[ext]')
+        }
+      },
+```
+
 ## Quick Start
 ``` javascript
 import Vue from 'vue'

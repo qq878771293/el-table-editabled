@@ -1,8 +1,8 @@
 {
   "name": "el-table-editabled",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "",
-  "main": "build.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },

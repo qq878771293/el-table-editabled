@@ -9,7 +9,8 @@
     getEmptyArray,
     getEmptyObject,
     isEmpty,
-    deepCopy
+    deepCopy,
+    observable
   } from "./utils";
   import TabelStore from './table-store'
 
@@ -78,9 +79,6 @@
       init () {
         this.tableCacheData = new Map()
         const cellStates = {}
-        const {
-          observable
-        } = this.$options
 
         this.columns.forEach(prop => {
           const cellStatesCreator = this.cellStates[prop]

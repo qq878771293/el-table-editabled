@@ -5,7 +5,7 @@ import App from './App'
 
 import ElementUi from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import ElTableEditabled from '../packages/index'
+import ElTableEditabled from '../package/index'
 
 Vue.use(ElementUi, { size: 'small' })
 Vue.use(ElTableEditabled)
