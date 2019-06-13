@@ -9,12 +9,9 @@
     getEmptyArray,
     getEmptyObject,
     isEmpty,
-    deepCopy,
-    observable
+    deepCopy
   } from "./utils";
   import TabelStore from './table-store'
-
-  import Vue from 'vue'
 
   export default {
     name: 'ElTableEditabled',
@@ -81,6 +78,9 @@
       init () {
         this.tableCacheData = new Map()
         const cellStates = {}
+        const {
+          observable
+        } = this.$options
 
         this.columns.forEach(prop => {
           const cellStatesCreator = this.cellStates[prop]
@@ -129,23 +129,6 @@
           }
         })
       },
-
-      // 回滚功能暂不开启
-      // fallback () {
-      //   const tableData = []
-      //   const tableCacheData = new Map()
-      //
-      //   for (const [row, cacheRowData] of this.tableCacheData) {
-      //     const rowStates = this.store.getStates(row)
-      //
-      //     this.updateTableCache(row, cacheRowData, rowStates)
-      //     tableData.push(cacheRowData)
-      //   }
-      //
-      //   this.byOwnerAction = true
-      //   this.tableCacheData = tableCacheData
-      //   this.$emit('table-data-change', tableData)
-      // },
 
       cancelRows (rows, cancelData = true) {
         const {
