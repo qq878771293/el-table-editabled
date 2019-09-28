@@ -293,6 +293,7 @@ validate | 对整个表格正在编辑的数据进行校验 | Function(callback:
 :-------: | -------  |  :-------:  |  :-------:
 row  |  当前单元格所在的行数据  | Object  |  --
 prop  |  字段名(对应columns数组里面的配置)  |  String  |  --
+dependencies  |  可以通过该属性来监听rowStates，row，cellStates上的一些数据的变化来触发某些动作  |  Object  |  --
 
 ### El-Table-Editabled-Cell Scoped Slot:
 

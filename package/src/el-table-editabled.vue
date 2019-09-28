@@ -11,7 +11,7 @@
     isEmpty,
     deepCopy,
     observable
-  } from "./utils";
+  } from "./utils"
   import TabelStore from './table-store'
 
   export default {
@@ -243,7 +243,7 @@
 
             if ((ownStates.editing || rowStates.editing) && this.validators[prop]) {
               validatePromiseStacks.push(new Promise((resolve, reject) => {
-                this.validateCell(prop, row, rowStates, cellStates, ownStates).then(errorMsg => {
+                this.validateCell(row, prop).then(errorMsg => {
                   if (errorMsg) {
                     reject()
                   } else {
@@ -270,8 +270,11 @@
         this.validateRows(this.tableData, cb)
       },
 
-      validateCell (prop, row, rowStates, cellStates, ownStates) {
+      validateCell (row, prop) {
         const validator = this.validators[prop]
+        const cellStates = this.store.getStates(row)
+        const rowStates = cellStates._states
+        const ownStates = cellStates ? cellStates[prop] : {}
 
         return new Promise(resolve => {
           validator(row, (errorMsg) => {

@@ -1,5 +1,6 @@
-const toString = Object.prototype.toString
 import Vue from 'vue'
+
+const toString = Object.prototype.toString
 
 export const isNumber = function (val) {
   let isNumberRes = true
@@ -11,6 +12,10 @@ export const isNumber = function (val) {
   }
 
   return isNumberRes
+}
+
+export const isFunction = (target) => {
+  return toString.call(target) === '[object Function]'
 }
 
 export const isEmpty = (target) => {

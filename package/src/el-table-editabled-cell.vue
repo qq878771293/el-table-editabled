@@ -36,7 +36,9 @@
 <script>
   import {
     isNumber,
-    isEmpty
+    isEmpty,
+    isObject,
+    isFunction
   } from "./utils"
 
   export default {
@@ -45,6 +47,7 @@
     props: {
       prop: String,
       row: null,
+      dependencies: Object
     },
     computed: {
       rowStates () {
@@ -57,9 +60,25 @@
         return this.cellStates && this.prop ? this.cellStates[this.prop] : {}
       }
     },
+    created () {
+      if (this.dependencies) {
+        Object.keys(this.dependencies).forEach(target => {
+          const watcherOptions = this.dependencies[target]
+          const watcherHandler = (newVal, oldVal, cb) => {
+            cb(newVal, oldVal, this.row, this.ownStates, this.cellStates, this.rowStates)
+          }
+
+          if (isObject(watcherOptions)) {
+            this.$watch(target, (newVal, oldVal) => watcherHandler(newVal, oldVal, watcherOptions.handler), watcherOptions)
+          } else if (isFunction(watcherOptions)) {
+            this.$watch(target, (newVal, oldVal) => watcherHandler(newVal, oldVal, watcherOptions))
+          }
+        })
+      }
+    },
     methods: {
       validateOwn (cb) {
-        this.editValidator.validateCell(this.prop, this.row, this.rowStates, this.cellStates, this.ownStates)
+        this.editValidator.validateCell(this.row, this.prop)
           .then(errorMsg => {
             let valid
 
